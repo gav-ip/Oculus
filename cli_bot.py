@@ -6,6 +6,9 @@ import requests
 infura_url = "https://mainnet.infura.io/v3/834f5b297d404c70a7f920c99450dc29"
 web3 = Web3(Web3.HTTPProvider(infura_url))
 
+def get_eth_price():
+    coinAPI_url = "https://customerportal.coinapi.io/0798f35db822a95d"
+
 #checking if connection is successful
 if web3.is_connected():
     print("connected to Ethereum Mainnet")
