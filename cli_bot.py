@@ -1,6 +1,8 @@
 import os
 import typer
 import requests
+import threading
+import time
 from web3 import Web3
 from dotenv import load_dotenv 
 
@@ -33,18 +35,25 @@ def get_eth_price():
         print(f"Failed to fetch data. HTTP Status Code: {response.status_code}")
         print(response.text)  # Print error details
         return None
-    
-def main():
+
+def live_server():
+    print("Ethereum price. Press 'Ctrl + C' to quit.")
+    try:
+        while True:
+            eth_price = get_eth_price()
+            if eth_price:
+                print(f"Current Ethereum (ETH) price: ${eth_price:.2f}")
+            else:
+                print("Unable to fetch Ethereum price.")
+            time.sleep(5)
+    except KeyboardInterrupt:
+        print("\nServer stopped by user.")
+
+if __name__ == "__main__":
     #checking if connection is successful
     if web3.is_connected():
         print("connected to Ethereum Mainnet")
     else:
         print("Failed to connect")
 
-    #testing if eth price can be printed 
-    eth_price = get_eth_price()
-    if eth_price:
-        print(f"ETH price in USD: ${eth_price:.2f}")
-    else:
-        print("Failed to retrieve ETH price")
-main()
+    live_server()
