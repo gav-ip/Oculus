@@ -13,9 +13,20 @@ load_dotenv()
 url = f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}"
 web3 = Web3(Web3.HTTPProvider(url))
 
-def get_eth_price():
+def clear_terminal():
+    if os.name == 'nt':
+        os.system('cls')
+
+    # For macOS and Linux
+    else:
+        os.system('clear')
+
+def get_coin_price(coin):
+
+    coin = coin.upper()
+
     # CoinAPI URL for Ethereum data
-    url = "https://rest.coinapi.io/v1/exchangerate/ETH/USD"
+    url = f"https://rest.coinapi.io/v1/exchangerate/{coin}/USD"
     
     # Headers include the CoinAPI key
     headers = {
@@ -29,31 +40,37 @@ def get_eth_price():
     if response.status_code == 200:
         data = response.json()
         # Extract the Ethereum price in USD
-        eth_price = data["rate"]
-        return eth_price
+        coin_price = data["rate"]
+        return coin_price
     else:
-        print(f"Failed to fetch data. HTTP Status Code: {response.status_code}")
-        print(response.text)  # Print error details
         return None
-
-def live_server():
-    print("Ethereum price. Press 'Ctrl + C' to quit.")
+def live_server(coin):
+    print(f"Fetching live price for {coin.upper()}. Press 'Ctrl + C' to quit.")
     try:
         while True:
-            eth_price = get_eth_price()
-            if eth_price:
-                print(f"Current Ethereum (ETH) price: ${eth_price:.2f}")
+            coin_price = get_coin_price(coin)
+            if coin_price:
+                print(f"Current {coin.upper()} price: ${coin_price:.2f}")
             else:
-                print("Unable to fetch Ethereum price.")
+                print("Unable to fetch", coin ,"price.")
             time.sleep(5)
     except KeyboardInterrupt:
         print("\nServer stopped by user.")
 
+# Main function
 if __name__ == "__main__":
     #checking if connection is successful
     if web3.is_connected():
         print("connected to Ethereum Mainnet")
+        
     else:
         print("Failed to connect")
+    
+    while True:
+        coin = input("Please choose coin price to track: BTC, ETH, SOL\n")
+        if coin == "BTC" or coin == "ETH" or coin == "SOL":
+            break
+        else:
+            coin = input("Please choose coin price to track: BTC, ETH, SOL\n")
 
-    live_server()
+    live_server(coin)
