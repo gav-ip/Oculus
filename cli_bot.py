@@ -9,6 +9,13 @@ from dotenv import load_dotenv
 #Loading in API Keys
 load_dotenv()
 
+WALLETS = {
+    "BTC": "your_bitcoin_address",
+    "ETH": "your_ethereum_address",
+    "SOL": "your_solana_address",
+}
+
+CURRENCY = "usd"
 #connect to an ethereum node using infura API
 url = f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}"
 web3 = Web3(Web3.HTTPProvider(url))
@@ -20,6 +27,11 @@ def clear_terminal():
     # For macOS and Linux
     else:
         os.system('clear')
+
+def get_balance(coin):
+    #Fetches balance for provided coin given by user
+    ""
+
 
 def get_coin_price(coin):
 
@@ -57,12 +69,10 @@ def live_server(coin):
     except KeyboardInterrupt:
         print("\nServer stopped by user.")
 
-# Main function
-if __name__ == "__main__":
+def main():
     #checking if connection is successful
     if web3.is_connected():
         print("connected to Ethereum Mainnet")
-        
     else:
         print("Failed to connect")
     
@@ -74,3 +84,7 @@ if __name__ == "__main__":
             coin = input("Please choose coin price to track: BTC, ETH, SOL\n")
 
     live_server(coin)
+
+
+if __name__ == "__main__":
+    main()
